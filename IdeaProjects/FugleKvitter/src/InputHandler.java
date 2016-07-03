@@ -1,12 +1,17 @@
 import javax.sound.sampled.*;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.Line.Info;
 /**
  * Created by anders on 03.07.16.
  */
 public class InputHandler {
-
+/*
     private final AudioFormat format = getFormat(); // Denne er grei
+
+    private TargetDataline microphone;
+    microphone = AudioSystem.getTargetDataLine(format);
+
     private DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
 
     if (!AudioSystem.isLineSupported((Line.Info) info) {
@@ -35,4 +40,5 @@ public class InputHandler {
     } catch (LineUnavailableException ex) {
         // Handle the error ...
     }
+    */
 }
