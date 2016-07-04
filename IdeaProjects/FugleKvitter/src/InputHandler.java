@@ -1,44 +1,59 @@
-import javax.sound.sampled.*;
-import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
-import javax.sound.sampled.Line.Info;
+import java.io.ByteArrayOutputStream;
+
+
 /**
  * Created by anders on 03.07.16.
  */
 public class InputHandler {
-/*
-    private final AudioFormat format = getFormat(); // Denne er grei
+    private TargetDataLine mic;
+    private SourceDataLine speakers;
+    private AudioFormat format = new AudioFormat(8000.0f, 16, 1, true, true);
+    private int numberOfRecordingBits = 1000;
 
-    private TargetDataline microphone;
-    microphone = AudioSystem.getTargetDataLine(format);
+    public InputHandler(TargetDataLine microphone,SourceDataLine loudSpeaker){
+        this.mic = microphone;
+        this.speakers = loudSpeaker;
+    }
+    public void record(){
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        int numberOfBytesRead;
+        int CHUNk_SIZE = 1024;
+        byte[] data = new byte[mic.getBufferSize() / 5];
+        int bytesRead = 0;
+        int lastRead = -1;
 
-    private DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
 
-    if (!AudioSystem.isLineSupported((Line.Info) info) {
-        // Handle the error ...
+        try {
+            mic.open(format);
+            speakers.open(format);
+            speakers.start();
+            while(bytesRead < numberOfRecordingBits) {
+                numberOfBytesRead = mic.read(data, 0, CHUNk_SIZE);
+                bytesRead += numberOfBytesRead;
+                //
+                out.write(data,0,numberOfBytesRead);
+                //
+                speakers.write(data, 0, numberOfBytesRead);
+                if(bytesRead != lastRead){
+                    System.out.println(bytesRead);
+                    lastRead = bytesRead;
+                }
+            }
+            System.out.print("Nå skal ting skje snart!");
+            speakers.drain();
+            speakers.close();
+            mic.close();
+            System.out.println("Ferdig");
+        }
+        catch (LineUnavailableException e){
+            e.printStackTrace();
+        }
 
     }
 
-    private final TargetDataLine line = (TargetDataLine) AudioSystem.getLine();
-    line.open(format);
-    line.start();
 
-
-    private AudioFormat getFormat(){
-        float sampleRate = 44100;
-        int sampleSizeInBits = 8;
-        int channels = 1;
-        boolean signed = true;
-        boolean bigEndian = true;
-        return new AudioFormat(sampleRate,sampleSizeInBits,channels,signed,bigEndian);
-    }
-
-// Obtain and open the line.
-    try {
-        line = (TargetDataLine) AudioSystem.getLine(info);
-        line.open(format);
-    } catch (LineUnavailableException ex) {
-        // Handle the error ...
-    }
-    */
 }
