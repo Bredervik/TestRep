@@ -1,5 +1,5 @@
 import javax.sound.sampled.*;
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 
 /**
  * Created by anders on 03.07.16.
@@ -9,6 +9,37 @@ public class Runner {
 
 
     public static void main(String [] args){
+        AudioFormat format = new AudioFormat(44100, 8, 2, false, false);
+        System.out.println("Audio format used is: "+format.toString());
+        SpeakerHandler aSpeakerHandler = new SpeakerHandler();
+        SourceDataLine aSpeaker = aSpeakerHandler.getSpeakers();
+
+        File file = new File("sample2.wav");
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        byte[] buf = new byte[705];
+
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            for(int readNum; (readNum = fis.read(buf)) != -1;){
+                bos.write(buf, 0, readNum);
+            }
+
+        }
+        catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        byte[] bytes = bos.toByteArray();
+        for(int i = 0; i < 15; i++){
+            System.out.print(bytes[i]+" ");
+        }
+        aSpeakerHandler.playByteArray(bytes);
+
+
+
+    /*
 
         MicHandler aMicHandler = new MicHandler();
         TargetDataLine aMic = aMicHandler.getMicrophone();
@@ -19,6 +50,7 @@ public class Runner {
         InputHandler inputHandler = new InputHandler(aMic,aSpeaker);
 
         inputHandler.record();
+        */
 
     }
 

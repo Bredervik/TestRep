@@ -21,4 +21,17 @@ public class SpeakerHandler {
     public SourceDataLine getSpeakers(){
         return speakers;
     }
+    public void playByteArray(byte[] aSound){
+        try {
+            System.out.println("Sound will now be played.");
+            speakers.open(format);
+            speakers.start();
+            speakers.write(aSound, 0, aSound.length);
+            speakers.drain();
+            speakers.close();
+        }
+        catch (LineUnavailableException e){
+            e.printStackTrace();
+        }
+    }
 }
